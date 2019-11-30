@@ -1,15 +1,15 @@
 const express = require('express');
-const should = require('should');
+const { validationResult } = require('express-validator');
 const database = require('../../database');
+const validate = require('./middleware');
 
 const router = express.Router();
 
 // returns an object of the req body and query you sent
 // sends an error if you sent nothing in either
+// No Validation necessary since it is a get request with no data
 router.get('/get', (req, res) => {
   try {
-    req.query.should.be.an.Object().and.not.empty();
-    req.body.should.be.an.Object().and.not.empty();
     res.status(200).send({ query: req.query, body: req.body });
   } catch (error) {
     res.status(400).send(error.message);
@@ -22,26 +22,37 @@ router.get('/getDatabase', (req, res) => {
 });
 
 // updates data
-router.post('/update', (req, res) => {
+router.post('/update', validate('/update'), (req, res) => {
   try {
-    should(database.getDatas()).containDeep([req.body.data]);
-    should(database.getFields(req.body.data)).containDeep([req.body.field]);
-    should(req.body.value).not.be.Undefined();
-    database.updateData(req.body.data, req.body.field, req.body.value);
-    res.status(200).send('Update received');
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    const updatedData = database.updateData(
+      req.query.data,
+      req.query.field,
+      req.body.value,
+    );
+    return res.status(200).send(updatedData);
   } catch (error) {
-    res.status(400).send(error.message);
+    return res.status(400).send(error.message);
   }
 });
 
 // deletes {req.body.data} key from database object
-router.delete('/delete', (req, res) => {
+router.delete('/delete', validate('/delete'), (req, res) => {
   try {
-    should(database.getDatas()).containDeep([req.body.data]);
-    database.deleteData(req.body.data);
-    res.status(200).send('Successfully deleted');
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    const deletedData = database.deleteData(req.query.data);
+    return res.status(200).send({
+      message: 'Successfully deleted',
+      deletedData,
+    });
   } catch (error) {
-    res.status(400).send(error.message);
+    return res.status(400).send(error.message);
   }
 });
 

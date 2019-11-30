@@ -9,7 +9,7 @@ app.use('/template', templateRoute);
 
 const startServer = () => {
   // eslint-disable-next-line no-console
-  app.listen(port, () => console.log(`Server listening on port ${port}!`));
+  app.listen(port, () => console.log(`Server listening on port ${port}`));
 };
 
 const server = {

@@ -1,4 +1,9 @@
 {
     "eslint.autoFixOnSave": true,
-    "editor.tabSize": 2
+    "editor.tabSize": 2,
+    "prettier.singleQuote": true,
+    "prettier.jsxSingleQuote": true,
+    "javascript.preferences.quoteStyle": "single",
+    "typescript.preferences.quoteStyle": "single",
+    "prettier.trailingComma": "all"
 }
