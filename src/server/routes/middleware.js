@@ -20,12 +20,23 @@ const updateValidator = () => [
 
 const deleteValidator = () => [dataValidator];
 
+const addValidator = () => [
+  query('data').custom((data) => {
+    if (database.getDatas().includes(data)) {
+      throw new Error('data field is already in the database');
+    }
+    return true;
+  }),
+];
+
 const validate = (route) => {
   switch (route) {
     case '/update':
       return updateValidator();
     case '/delete':
       return deleteValidator();
+    case '/add':
+      return addValidator();
     default:
       return [];
   }

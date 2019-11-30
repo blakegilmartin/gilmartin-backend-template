@@ -4,6 +4,25 @@ const templateDatabase = {
   data3: { num: 3, str: 'three' },
 };
 
+const defaultObject = {
+  num: 0,
+  str: '',
+};
+
+module.exports.addData = (data, object) => {
+  let newData = {
+    num: object.num,
+    str: object.str,
+  };
+  newData = Object.keys(newData).forEach((key) => {
+    if (!newData[key]) {
+      delete newData[key];
+    }
+  });
+  templateDatabase[data] = { ...defaultObject, ...newData };
+  return { data: templateDatabase[data] };
+};
+
 module.exports.updateData = (data, field, value) => {
   templateDatabase[data][field] = value;
   return { data: templateDatabase[data] };
