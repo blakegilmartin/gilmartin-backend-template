@@ -1,3 +1,5 @@
+const logger = require('debug')('database');
+
 const templateDatabase = {
   data1: { num: 1, str: 'one' },
   data2: { num: 2, str: 'two' },
@@ -10,22 +12,29 @@ const defaultObject = {
 };
 
 module.exports.addData = (data, object) => {
-  let newData = {
+  let newEntry = {
     num: object.num,
     str: object.str,
   };
-  newData = Object.keys(newData).forEach((key) => {
-    if (!newData[key]) {
-      delete newData[key];
+  Object.keys(newEntry).forEach((key) => {
+    if (!newEntry[key]) {
+      delete newEntry[key];
     }
   });
-  templateDatabase[data] = { ...defaultObject, ...newData };
-  return { data: templateDatabase[data] };
+  newEntry = { ...defaultObject, ...newEntry };
+  templateDatabase[data] = newEntry;
+  const obj = {};
+  obj[data] = newEntry;
+  logger(`Received ${data}, ${JSON.stringify(object)} and created ${JSON.stringify(obj)}`);
+  return obj;
 };
 
 module.exports.updateData = (data, field, value) => {
+  const obj = {};
   templateDatabase[data][field] = value;
-  return { data: templateDatabase[data] };
+  obj[data] = templateDatabase[data];
+  logger(`Received update for ${data}, field: ${field}, value: ${value}`);
+  return obj;
 };
 
 module.exports.getDatas = () => Object.keys(templateDatabase);
