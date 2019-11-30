@@ -6,7 +6,7 @@ const templateDatabase = {
 
 module.exports.updateData = (data, field, value) => {
   templateDatabase[data][field] = value;
-  return templateDatabase[data][field];
+  return { data: templateDatabase[data] };
 };
 
 module.exports.getDatas = () => Object.keys(templateDatabase);
@@ -14,7 +14,7 @@ module.exports.getDatas = () => Object.keys(templateDatabase);
 module.exports.getFields = (data) => Object.keys(templateDatabase[data]);
 
 module.exports.deleteData = (data) => {
-  const deletedData = templateDatabase[data];
+  const deletedData = { data: templateDatabase[data] };
   delete templateDatabase[data];
   return deletedData;
 };

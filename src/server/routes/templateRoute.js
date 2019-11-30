@@ -5,20 +5,13 @@ const validate = require('./middleware');
 
 const router = express.Router();
 
-// returns an object of the req body and query you sent
-// sends an error if you sent nothing in either
-// No Validation necessary since it is a get request with no data
-router.get('/get', (req, res) => {
-  try {
-    res.status(200).send({ query: req.query, body: req.body });
-  } catch (error) {
-    res.status(400).send(error.message);
-  }
-});
-
 // gets the entire database object
 router.get('/getDatabase', (req, res) => {
-  res.status(200).send(database.getDatabaseObject());
+  try {
+    return res.status(200).send(database.getDatabaseObject());
+  } catch (error) {
+    return res.status(400).send(error.message);
+  }
 });
 
 // updates data
